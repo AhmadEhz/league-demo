@@ -4,17 +4,18 @@ import org.league.base.entity.BaseEntity;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
+import java.util.Optional;
 
 public abstract class BaseRepositoryImpl<E extends BaseEntity, ID extends Serializable> implements BaseRepository<E, ID> {
-    private EntityManager entityManager;
+    protected final EntityManager entityManager;
 
     public BaseRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Override
-    public E read(ID id) {
-        return entityManager.find(getEntityClass(), id);
+    public Optional<E> read(ID id) {
+        return Optional.ofNullable(entityManager.find(getEntityClass(), id));
     }
 
     @Override

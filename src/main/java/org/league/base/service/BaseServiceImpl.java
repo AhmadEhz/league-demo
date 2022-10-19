@@ -5,11 +5,12 @@ import org.league.base.repository.BaseRepository;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class BaseServiceImpl<E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID>> implements BaseService<E, ID, R> {
-    private final R repository;
-    private final EntityManager entityManager;
+    protected final R repository;
+    protected final EntityManager entityManager;
 
     public BaseServiceImpl(R repository) {
         this.repository = repository;
@@ -17,7 +18,7 @@ public class BaseServiceImpl<E extends BaseEntity, ID extends Serializable, R ex
     }
 
     @Override
-    public E load(ID id) {
+    public Optional<E> load(ID id) {
         return repository.read(id);
     }
 
@@ -43,7 +44,7 @@ public class BaseServiceImpl<E extends BaseEntity, ID extends Serializable, R ex
             entityManager.getTransaction().commit();
         } catch (Exception ex) {
             entityManager.getTransaction().rollback();
-            throw ex;
+            ex.printStackTrace();
         }
     }
 }
