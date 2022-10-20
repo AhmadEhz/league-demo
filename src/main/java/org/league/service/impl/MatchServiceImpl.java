@@ -7,6 +7,7 @@ import org.league.repository.ClubRepository;
 import org.league.repository.MatchRepository;
 import org.league.service.MatchService;
 import org.league.util.ApplicationContext;
+import org.league.util.Values;
 import org.league.util.exception.EntityNotFoundException;
 
 import java.util.Comparator;
@@ -25,8 +26,10 @@ public class MatchServiceImpl extends BaseServiceImpl<Match, Long, MatchReposito
     public void setMatch(Long homeClubId, Long awayClubId, int homeClubGoals, int awayClubGoals) {
         Optional<Club> homeClub = clubRepository.read(homeClubId);
         Optional<Club> awayClub = clubRepository.read(awayClubId);
+
         if (homeClub.isEmpty() && awayClub.isEmpty())
             throw new EntityNotFoundException("Club not found!");
+
         Match match = new Match(homeClub.get(), homeClubGoals, awayClub.get(), awayClubGoals);
         setClubs(homeClub.get(), awayClub.get(), homeClubGoals, awayClubGoals);
         try {
@@ -44,20 +47,20 @@ public class MatchServiceImpl extends BaseServiceImpl<Match, Long, MatchReposito
     private void setClubs(Club homeClub, Club awayClub, int homeClubGoals, int awayClubGoals) {
         if (homeClubGoals > awayClubGoals) {
             homeClub.addWin();
-            homeClub.addScore(3);
+            homeClub.addScore(Values.WIN_SCORE);
 
             awayClub.addLose();
         } else if (homeClubGoals < awayClubGoals) {
             homeClub.addLose();
 
             awayClub.addWin();
-            awayClub.addScore(3);
+            awayClub.addScore(Values.WIN_SCORE);
         } else {
             homeClub.addDraw();
-            homeClub.addScore(1);
+            homeClub.addScore(Values.DRAW_SCORE);
 
             awayClub.addDraw();
-            awayClub.addScore(1);
+            awayClub.addScore(Values.DRAW_SCORE);
         }
         homeClub.addGoalFor(homeClubGoals);
         homeClub.addGoalAgainst(awayClubGoals);

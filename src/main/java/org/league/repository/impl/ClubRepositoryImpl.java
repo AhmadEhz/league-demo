@@ -7,6 +7,7 @@ import org.league.repository.ClubRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +22,7 @@ public class ClubRepositoryImpl extends BaseRepositoryImpl<Club, Long> implement
     public Class<Club> getEntityClass() {
         return Club.class;
     }
+    @Override
 
     public Optional<Club> read(String name) {
         try {
@@ -50,9 +52,14 @@ public class ClubRepositoryImpl extends BaseRepositoryImpl<Club, Long> implement
 
     @Override
     public List<Club> getClubLeague() {
-        return entityManager.createQuery("""
-                select Club from Club order by score desc, goalFor desc
-                """).getResultList();
+        try {
+            return entityManager.createQuery("""
+                from Club order by score desc, goalFor desc
+                """,Club.class).getResultList();
+        }
+        catch (NoResultException nre) {
+            return new ArrayList<>();
+        }
     }
 
     @Override

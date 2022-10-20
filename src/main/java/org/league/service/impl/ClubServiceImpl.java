@@ -16,11 +16,25 @@ public class ClubServiceImpl extends BaseServiceImpl<Club,Long, ClubRepository>
     }
     @Override
     public void removeCoach(Club club) {
-        repository.removeCoach(club);
+        try {
+            entityManager.getTransaction().begin();
+            repository.removeCoach(club);
+            entityManager.getTransaction().commit();
+        }catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            e.printStackTrace();
+        }
     }
     @Override
     public void setCoach(Club club, Coach coach) {
-        repository.setCoach(club,coach);
+        try {
+            entityManager.getTransaction().begin();
+            repository.setCoach(club, coach);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            e.printStackTrace();
+        }
     }
     @Override
     public List<Club> getClubLeague() {
@@ -34,5 +48,4 @@ public class ClubServiceImpl extends BaseServiceImpl<Club,Long, ClubRepository>
     public Club getWinner() {
         return repository.getClubLeague().get(0);
     }
-
 }

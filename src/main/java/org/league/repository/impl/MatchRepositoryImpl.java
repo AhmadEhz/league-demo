@@ -20,7 +20,7 @@ public class MatchRepositoryImpl extends BaseRepositoryImpl<Match,Long>
     @Override
     public List<Match> getDerbies() {
         return entityManager.createQuery("""
-            select Match from Match where homeClub.city = awayClub.city
-            """).getResultList();
+            from Match where homeClub.city = awayClub.city
+            """,Match.class).getResultList();
     }
 }
